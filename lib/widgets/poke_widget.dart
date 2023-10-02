@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math'; // For randomizing pokemon
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
+import 'package:poke_guess/widgets/image_widget.dart';
 
 class Pokemon {
   final String name;
@@ -62,20 +63,17 @@ class PokeState extends State<PokeWidget> {
       child: FutureBuilder<Pokemon>(
         future: futurePokemon,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
+          if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return Column(children: [
-              Text(snapshot.data?.name ?? "Loading Pokemon..."),
-              Text(snapshot.data?.pokedexNo.toString() ??
-                  "Loading Pokedex Number"),
-              if (snapshot.data == null)
-                const CircularProgressIndicator()
-              else
-                Image.network(snapshot.data!.sprite),
-            ]);
+            if (snapshot.data?.pokedexNo == null) {
+              return const Text("Loading Pokemon Data...");
+            } else {
+              return ImageBox(
+                  name: snapshot.data!.name,
+                  sprite: snapshot.data!.sprite,
+                  pokedexNo: snapshot.data!.pokedexNo);
+            }
           }
         },
       ),
