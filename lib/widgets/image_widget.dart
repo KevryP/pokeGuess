@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class ImageBox extends StatefulWidget {
@@ -16,8 +18,8 @@ class ImageBox extends StatefulWidget {
 }
 
 class ImageBoxState extends State<ImageBox> {
-  double sigmaX = 50.0;
-  double sigmaY = 10.0;
+  double sigmaX = 5.0;
+  double sigmaY = 1.0;
 
   void updateBlur(double sigmaX, double sigmaY) {
     setState(() {
@@ -32,7 +34,10 @@ class ImageBoxState extends State<ImageBox> {
       children: [
         Text(widget.name),
         Text(widget.pokedexNo.toString()),
-        Image.network(widget.sprite),
+        ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
+          child: Image.network(widget.sprite),
+        ),
       ],
     );
   }
