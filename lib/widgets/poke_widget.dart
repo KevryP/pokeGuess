@@ -3,6 +3,7 @@ import 'dart:math'; // For randomizing pokemon
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:poke_guess/widgets/image_widget.dart';
+import 'package:poke_guess/widgets/game_widget.dart';
 
 class Pokemon {
   final String name;
@@ -69,10 +70,12 @@ class PokeState extends State<PokeWidget> {
             if (snapshot.data?.pokedexNo == null) {
               return const Text("Loading Pokemon Data...");
             } else {
-              return ImageBox(
-                  name: snapshot.data!.name,
+              return Column(children: [
+                ImageBox(
                   sprite: snapshot.data!.sprite,
-                  pokedexNo: snapshot.data!.pokedexNo);
+                ),
+                Text(snapshot.data?.name ?? "Loading Pokemon Name..."),
+              ]);
             }
           }
         },
