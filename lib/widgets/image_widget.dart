@@ -39,13 +39,14 @@ class ImageBoxState extends State<ImageBox> {
   Widget build(BuildContext context) {
     return Column(children: [
       Stack(children: [
-        Image.asset('../assets/witp.jpg'),
-        Positioned(top: 0, left: 20, child: imgContainer())
+        pokeBackground(),
+        backgroundBlur(),
+        Positioned(top: 0, left: 20, child: pokeImg())
       ])
     ]);
   }
 
-  ImageFiltered imgContainer() {
+  ImageFiltered pokeImg() {
     return ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
         child: ColorFiltered(
@@ -56,5 +57,19 @@ class ImageBoxState extends State<ImageBox> {
             width: 300,
           ),
         ));
+  }
+
+  ClipRRect pokeBackground() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: Image.asset('../assets/witp.jpg'),
+    );
+  }
+
+  BackdropFilter backgroundBlur() {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+      child: pokeBackground(),
+    );
   }
 }
