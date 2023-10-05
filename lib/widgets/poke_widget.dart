@@ -75,6 +75,7 @@ class PokeState extends State<PokeWidget> {
                   sprite: snapshot.data!.sprite,
                 ),
                 Text(snapshot.data?.name ?? "Loading Pokemon Name..."),
+                const GuessGame(),
               ]);
             }
           }
