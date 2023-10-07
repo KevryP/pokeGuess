@@ -26,10 +26,15 @@ class Pokemon {
 
 class PokeWidget extends StatefulWidget {
   final PokeState pokeState;
+
   const PokeWidget({super.key, required this.pokeState});
 
   @override
   PokeState createState() => pokeState;
+
+  ImageBoxState? getImageBox() {
+    return pokeState.getImageBox();
+  }
 
   String? getPokeName() {
     return pokeState.getPokeName();
@@ -39,6 +44,14 @@ class PokeWidget extends StatefulWidget {
 class PokeState extends State<PokeWidget> {
   Future<Pokemon>? futurePokemon;
   String? pokeName;
+
+  ImageBoxState pokeImgState = ImageBoxState();
+  ImageBox? pokeImg;
+
+  ImageBoxState? getImageBox() {
+    return pokeImgState;
+  }
+
   String? getPokeName() {
     return pokeName;
   }
@@ -82,8 +95,9 @@ class PokeState extends State<PokeWidget> {
             } else {
               pokeName = snapshot.data?.name;
               return Column(children: [
-                ImageBox(
+                pokeImg = ImageBox(
                   sprite: snapshot.data!.sprite,
+                  box: pokeImgState,
                 ),
                 Text(snapshot.data?.name ?? "Loading Pokemon Name..."),
               ]);

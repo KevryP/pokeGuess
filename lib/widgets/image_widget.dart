@@ -3,14 +3,20 @@ import 'package:flutter/material.dart';
 
 class ImageBox extends StatefulWidget {
   final String sprite;
+  final ImageBoxState box;
 
   const ImageBox({
     super.key,
     required this.sprite,
+    required this.box,
   });
 
   @override
-  ImageBoxState createState() => ImageBoxState();
+  ImageBoxState createState() => box;
+
+  void updateBlur(double sigmaX, double sigmaY) {
+    box.updateBlur(sigmaX, sigmaY);
+  }
 }
 
 class ImageBoxState extends State<ImageBox> {
@@ -18,10 +24,11 @@ class ImageBoxState extends State<ImageBox> {
   double sigmaY = 20.0;
   Color gradientColor = Colors.black;
 
-  void updateBlur(double sigmaX, double sigmaY) {
+  void updateBlur(double newSigmaX, double newSigmaY) {
     setState(() {
-      sigmaX = sigmaX;
-      sigmaY = sigmaY;
+      print("State set");
+      sigmaX = newSigmaX;
+      sigmaY = newSigmaY;
     });
   }
 
