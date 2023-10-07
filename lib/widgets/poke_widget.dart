@@ -25,14 +25,23 @@ class Pokemon {
 }
 
 class PokeWidget extends StatefulWidget {
-  const PokeWidget({Key? key}) : super(key: key);
+  final PokeState pokeState;
+  const PokeWidget({super.key, required this.pokeState});
 
   @override
-  PokeState createState() => PokeState();
+  PokeState createState() => pokeState;
+
+  String? getPokeName() {
+    return pokeState.getPokeName();
+  }
 }
 
 class PokeState extends State<PokeWidget> {
   Future<Pokemon>? futurePokemon;
+  String? pokeName;
+  String? getPokeName() {
+    return pokeName;
+  }
 
   @override
   void initState() {
@@ -52,6 +61,7 @@ class PokeState extends State<PokeWidget> {
   Future<Pokemon> fetchPokemon(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
+      print("ok");
       return Pokemon.fromJson(convert.jsonDecode(response.body));
     } else {
       throw Exception('Failed to load Pokemon');
@@ -70,12 +80,12 @@ class PokeState extends State<PokeWidget> {
             if (snapshot.data?.pokedexNo == null) {
               return const Text("Loading Pokemon Data...");
             } else {
+              pokeName = snapshot.data?.name;
               return Column(children: [
                 ImageBox(
                   sprite: snapshot.data!.sprite,
                 ),
                 Text(snapshot.data?.name ?? "Loading Pokemon Name..."),
-                const GuessGame(),
               ]);
             }
           }
