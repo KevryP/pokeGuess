@@ -13,10 +13,6 @@ class ImageBox extends StatefulWidget {
 
   @override
   ImageBoxState createState() => box;
-
-  void updateBlur(double sigmaX, double sigmaY) {
-    box.updateBlur(sigmaX, sigmaY);
-  }
 }
 
 class ImageBoxState extends State<ImageBox> {
@@ -26,19 +22,19 @@ class ImageBoxState extends State<ImageBox> {
 
   void updateBlur(double newSigmaX, double newSigmaY) {
     setState(() {
-      print("State set");
-      sigmaX = newSigmaX;
-      sigmaY = newSigmaY;
+      if (newSigmaX > sigmaX) {
+        sigmaX = 0;
+        sigmaY = 0;
+        return;
+      }
+      sigmaX = sigmaX - newSigmaX;
+      sigmaY = sigmaY - newSigmaY;
     });
   }
 
   void updateColor() {
     setState(() {
-      if (gradientColor == Colors.black) {
-        gradientColor == Colors.transparent;
-      } else {
-        gradientColor = Colors.black;
-      }
+      gradientColor = Colors.transparent;
     });
   }
 

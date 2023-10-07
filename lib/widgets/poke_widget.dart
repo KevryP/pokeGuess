@@ -99,7 +99,7 @@ class PokeState extends State<PokeWidget> {
                   sprite: snapshot.data!.sprite,
                   box: pokeImgState,
                 ),
-                Text(snapshot.data?.name ?? "Loading Pokemon Name..."),
+                //Text(snapshot.data?.name ?? "Loading Pokemon Name..."),
               ]);
             }
           }

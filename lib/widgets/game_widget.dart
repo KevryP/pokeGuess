@@ -54,9 +54,11 @@ class GuessGameState extends State<GuessGame> {
 
   onSubmit(String val) async {
     if (pokeWidge.getPokeName() == val) {
-      pokeWidge.getImageBox()?.updateBlur(0.0, 0.0);
+      pokeWidge.getImageBox()?.updateColor();
+      pokeWidge.getImageBox()?.updateBlur(20, 20);
     } else {
       updateGuesses(val);
+      pokeWidge.getImageBox()?.updateBlur(5, 5);
     }
   }
 }
