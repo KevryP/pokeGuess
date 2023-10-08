@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 
 class ImageBox extends StatefulWidget {
   final String sprite;
+  final ImageBoxState box;
 
   const ImageBox({
     super.key,
     required this.sprite,
+    required this.box,
   });
 
   @override
-  ImageBoxState createState() => ImageBoxState();
+  ImageBoxState createState() => box;
 }
 
 class ImageBoxState extends State<ImageBox> {
@@ -18,20 +20,21 @@ class ImageBoxState extends State<ImageBox> {
   double sigmaY = 20.0;
   Color gradientColor = Colors.black;
 
-  void updateBlur(double sigmaX, double sigmaY) {
+  void updateBlur(double newSigmaX, double newSigmaY) {
     setState(() {
-      sigmaX = sigmaX;
-      sigmaY = sigmaY;
+      if (newSigmaX > sigmaX) {
+        sigmaX = 0;
+        sigmaY = 0;
+        return;
+      }
+      sigmaX = sigmaX - newSigmaX;
+      sigmaY = sigmaY - newSigmaY;
     });
   }
 
   void updateColor() {
     setState(() {
-      if (gradientColor == Colors.black) {
-        gradientColor == Colors.transparent;
-      } else {
-        gradientColor = Colors.black;
-      }
+      gradientColor = Colors.transparent;
     });
   }
 
@@ -39,13 +42,14 @@ class ImageBoxState extends State<ImageBox> {
   Widget build(BuildContext context) {
     return Column(children: [
       Stack(children: [
-        Image.asset('../assets/witp.jpg'),
-        Positioned(top: 0, left: 20, child: imgContainer())
+        pokeBackground(),
+        backgroundBlur(),
+        Positioned(top: 0, left: 20, child: pokeImg())
       ])
     ]);
   }
 
-  ImageFiltered imgContainer() {
+  ImageFiltered pokeImg() {
     return ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
         child: ColorFiltered(
@@ -56,5 +60,19 @@ class ImageBoxState extends State<ImageBox> {
             width: 300,
           ),
         ));
+  }
+
+  ClipRRect pokeBackground() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24),
+      child: Image.asset('../assets/witp.jpg'),
+    );
+  }
+
+  BackdropFilter backgroundBlur() {
+    return BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+      child: pokeBackground(),
+    );
   }
 }
