@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:poke_guess/widgets/image_widget.dart';
 import 'package:poke_guess/widgets/game_widget.dart';
+import 'package:poke_guess/widgets/name_assist.dart';
 
 class Pokemon {
   final String name;

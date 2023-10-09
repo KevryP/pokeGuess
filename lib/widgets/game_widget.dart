@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'poke_widget.dart';
+import 'name_assist.dart';
 
 PokeState pokeState = PokeState();
 PokeWidget pokeWidge = PokeWidget(
@@ -15,6 +16,8 @@ class GuessGame extends StatefulWidget {
 
 class GuessGameState extends State<GuessGame> {
   List<String> guesses = [];
+  String guess = "";
+  TextEditingController guessController = TextEditingController();
 
   void updateGuesses(String guess) {
     setState(() {
@@ -23,23 +26,35 @@ class GuessGameState extends State<GuessGame> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    //const pokeWidget = PokeWidget(); // Create an instance of PokeWidget
+  void initState() {
+    super.initState();
 
+    guessController.addListener(_handleControllerChange);
+  }
+
+  _handleControllerChange() {
+    setState(() {
+      guess = guessController.text;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         pokeWidge,
-        newMethod(),
+        inputField(),
       ],
     );
   }
 
-  SizedBox newMethod() {
+  SizedBox inputField() {
     return SizedBox(
       width: 300,
       child: Column(
         children: [
           TextField(
+            controller: guessController,
             decoration: const InputDecoration(
               hintText: "Enter your guess",
             ),
@@ -47,6 +62,7 @@ class GuessGameState extends State<GuessGame> {
             textAlign: TextAlign.center,
           ),
           for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
+          PokeNames(guessInput: guess),
         ],
       ),
     );
