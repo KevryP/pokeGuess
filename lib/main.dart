@@ -13,7 +13,14 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: GuessGame(),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 100),
+                child: GuessGame(),
+              ),
+            ],
+          ),
         ),
       ),
     );
