@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'poke_widget.dart';
 import 'name_assist.dart';
 
-PokeState pokeState = PokeState();
+PokeState pokeState = pokeState = PokeState();
 PokeWidget pokeWidge = PokeWidget(
   pokeState: pokeState,
 );
@@ -43,28 +43,31 @@ class GuessGameState extends State<GuessGame> {
     return Column(
       children: [
         pokeWidge,
-        inputField(),
+        SizedBox(
+          width: 300,
+          child: Column(
+            children: [
+              inputField(),
+              for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
+              PokeNames(guessInput: guess),
+              resetBtn(),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  SizedBox inputField() {
-    return SizedBox(
-      width: 300,
-      child: Column(
-        children: [
-          TextField(
-            controller: guessController,
-            decoration: const InputDecoration(
-              hintText: "Enter your guess",
-            ),
-            onSubmitted: (value) => onSubmit(value),
-            textAlign: TextAlign.center,
-          ),
-          for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
-          PokeNames(guessInput: guess),
-        ],
+  TextField inputField() {
+    return TextField(
+      style: const TextStyle(color: Colors.white),
+      cursorColor: Colors.white,
+      controller: guessController,
+      decoration: const InputDecoration(
+        hintText: "Enter your guess",
       ),
+      onSubmitted: (value) => onSubmit(value),
+      textAlign: TextAlign.center,
     );
   }
 
@@ -76,5 +79,16 @@ class GuessGameState extends State<GuessGame> {
       updateGuesses(val);
       pokeWidge.getImageBox()?.updateBlur(5, 5);
     }
+  }
+
+  resetGame() {
+    pokeWidge.randomizePoke();
+  }
+
+  ElevatedButton resetBtn() {
+    return ElevatedButton(
+      onPressed: resetGame,
+      child: const Text("Reset"),
+    );
   }
 }

@@ -3,8 +3,6 @@ import 'dart:math'; // For randomizing pokemon
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:poke_guess/widgets/image_widget.dart';
-import 'package:poke_guess/widgets/game_widget.dart';
-import 'package:poke_guess/widgets/name_assist.dart';
 
 class Pokemon {
   final String name;
@@ -40,6 +38,10 @@ class PokeWidget extends StatefulWidget {
   String? getPokeName() {
     return pokeState.getPokeName();
   }
+
+  Future<void> randomizePoke() {
+    return pokeState.randomizePoke();
+  }
 }
 
 class PokeState extends State<PokeWidget> {
@@ -60,26 +62,39 @@ class PokeState extends State<PokeWidget> {
   @override
   void initState() {
     super.initState();
-    var pokeRandomizer = Random().nextInt(500);
-    //Get a random pokemon by pokedex number
-    fetchPokemon('https://pokeapi.co/api/v2/pokemon/$pokeRandomizer')
-        .then((pokemon) {
-      setState(() {
-        futurePokemon = Future.value(pokemon);
-      });
-    }).catchError((error) {
-      print('Error: $error');
-    });
+    fetchRandomPokemon();
   }
 
   Future<Pokemon> fetchPokemon(String url) async {
     final response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
-      print("ok");
       return Pokemon.fromJson(convert.jsonDecode(response.body));
     } else {
       throw Exception('Failed to load Pokemon');
     }
+  }
+
+  Future<void> fetchRandomPokemon() async {
+    var pokeRandomizer = Random().nextInt(500);
+    print(pokeRandomizer);
+    //Get a random pokemon by pokedex number
+    try {
+      fetchPokemon('https://pokeapi.co/api/v2/pokemon/$pokeRandomizer')
+          .then((pokemon) {
+        setState(() {
+          futurePokemon = Future.value(pokemon);
+        });
+      }).catchError((error) {
+        print('Error: $error');
+      });
+    } catch (e) {
+      print("error: $e");
+    }
+  }
+
+  Future<void> randomizePoke() async {
+    fetchRandomPokemon();
+    getImageBox()!.resetImage();
   }
 
   @override
