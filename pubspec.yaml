@@ -20,3 +20,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/witp.jpg
+  fonts:
+    - family: Pokemon
+      fonts:
+        - asset: fonts/Pokemon-Solid.ttf

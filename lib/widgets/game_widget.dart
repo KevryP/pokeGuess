@@ -15,6 +15,7 @@ class GuessGame extends StatefulWidget {
 }
 
 class GuessGameState extends State<GuessGame> {
+  bool isOver = false;
   List<String> guesses = [];
   String guess = "";
   TextEditingController guessController = TextEditingController();
@@ -42,6 +43,10 @@ class GuessGameState extends State<GuessGame> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        Text(
+          isOver == true ? pokeWidge.getPokeName()! : "Who's that",
+          style: const TextStyle(fontFamily: 'Pokemon', fontSize: 50),
+        ),
         pokeWidge,
         SizedBox(
           width: 300,
@@ -50,7 +55,8 @@ class GuessGameState extends State<GuessGame> {
               inputField(),
               for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
               PokeNames(guessInput: guess),
-              resetBtn(),
+              if (isOver == true) resetBtn(),
+              resetBtn(), //For testing, should be removed in release
             ],
           ),
         ),
@@ -72,23 +78,41 @@ class GuessGameState extends State<GuessGame> {
   }
 
   onSubmit(String val) async {
+    if (guesses.length >= 5) {
+      return;
+    }
     if (pokeWidge.getPokeName() == val) {
+      //Win
       pokeWidge.getImageBox()?.updateColor();
       pokeWidge.getImageBox()?.updateBlur(20, 20);
+      isOver = true;
     } else {
       updateGuesses(val);
       pokeWidge.getImageBox()?.updateBlur(5, 5);
+      if (guesses.length > 4) {
+        //Loss
+        isOver = true;
+        pokeWidge.getImageBox()?.updateColor();
+        pokeWidge.getImageBox()?.updateBlur(20, 20);
+      }
     }
+    guessController.text = "";
+    setState(() {});
   }
 
   resetGame() {
+    isOver = false;
     pokeWidge.randomizePoke();
+    guesses = [];
+    setState(() {});
   }
 
   ElevatedButton resetBtn() {
     return ElevatedButton(
       onPressed: resetGame,
-      child: const Text("Reset"),
+      child: const Text(
+        "Reset",
+      ),
     );
   }
 }

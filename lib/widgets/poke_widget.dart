@@ -76,7 +76,6 @@ class PokeState extends State<PokeWidget> {
 
   Future<void> fetchRandomPokemon() async {
     var pokeRandomizer = Random().nextInt(500);
-    print(pokeRandomizer);
     //Get a random pokemon by pokedex number
     try {
       fetchPokemon('https://pokeapi.co/api/v2/pokemon/$pokeRandomizer')
