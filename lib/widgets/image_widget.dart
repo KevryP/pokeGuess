@@ -34,7 +34,19 @@ class ImageBoxState extends State<ImageBox> {
 
   void updateColor() {
     setState(() {
-      gradientColor = Colors.transparent;
+      if (gradientColor == Colors.transparent) {
+        gradientColor = Colors.black;
+      } else {
+        gradientColor = Colors.transparent;
+      }
+    });
+  }
+
+  void resetImage() {
+    setState(() {
+      gradientColor = Colors.black;
+      sigmaX = 20;
+      sigmaY = 20;
     });
   }
 

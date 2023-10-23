@@ -81,7 +81,9 @@ class PokeNamesState extends State<PokeNames> {
       child: ListView.builder(
           itemCount: filteredNames?.length,
           itemBuilder: (BuildContext context, int index) {
-            return Text(filteredNames![index].name);
+            return Text(
+                style: const TextStyle(color: Colors.white),
+                filteredNames![index].name);
           }),
     );
   }
