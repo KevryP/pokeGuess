@@ -1,0 +1,93 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:poke_guess/login.dart';
+import 'package:poke_guess/widgets/game_widget.dart';
+
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: signUpForm());
+  }
+
+  Form signUpForm() {
+    return Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Email address",
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Enter a valid email address';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: "Password",
+              ),
+              obscureText: true,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Enter a password that meets the requirements';
+                }
+                return null;
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  //Successful
+                  onSignUp();
+                }
+                return;
+              },
+              child: const Text("Sign Up"),
+            ),
+            Column(
+              children: [
+                const Text("Already have an account?"),
+                ElevatedButton(
+                  onPressed: () {
+                    //Change to SignUp Page
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Login()));
+                  },
+                  child: const Text("Login"),
+                ),
+              ],
+            )
+          ],
+        ));
+  }
+
+  onSignUp() async {
+    try {
+      print("Sign up successful");
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text, password: _passwordController.text);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const GuessGame()));
+    } catch (e) {
+      print("Signup error: $e");
+    }
+  }
+}

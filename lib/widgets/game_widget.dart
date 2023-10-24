@@ -41,26 +41,36 @@ class GuessGameState extends State<GuessGame> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          isOver == true ? pokeWidge.getPokeName()! : "Who's that",
-          style: const TextStyle(fontFamily: 'Pokemon', fontSize: 50),
-        ),
-        pokeWidge,
-        SizedBox(
-          width: 300,
-          child: Column(
-            children: [
-              inputField(),
-              for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
-              PokeNames(guessInput: guess),
-              if (isOver == true) resetBtn(),
-              resetBtn(), //For testing, should be removed in release
-            ],
+    return Scaffold(
+      backgroundColor: Colors.black38,
+      body: Row(children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(top: 100),
+            child: Column(
+              children: [
+                pokeWidge,
+                Text(
+                  isOver == true ? pokeWidge.getPokeName()! : "Who's that",
+                  style: const TextStyle(fontFamily: 'Pokemon', fontSize: 50),
+                ),
+                SizedBox(
+                  width: 300,
+                  child: Column(
+                    children: [
+                      inputField(),
+                      for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
+                      PokeNames(guessInput: guess),
+                      if (isOver == true) resetBtn(),
+                      resetBtn(), //For testing, should be removed in release
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ],
+      ]),
     );
   }
 
