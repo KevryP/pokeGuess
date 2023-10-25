@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:poke_guess/widgets/pokedex.dart';
 import 'poke_widget.dart';
 import 'name_assist.dart';
 
@@ -76,6 +77,7 @@ class GuessGameState extends State<GuessGame> {
                       PokeNames(guessInput: guess),
                       if (isOver == true) resetBtn(),
                       resetBtn(), //For testing, should be removed in release
+                      pokedexButton()
                     ],
                   ),
                 ),
@@ -137,6 +139,14 @@ class GuessGameState extends State<GuessGame> {
       child: const Text(
         "Reset",
       ),
+    );
+  }
+
+  ElevatedButton pokedexButton() {
+    return ElevatedButton(
+      onPressed: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Pokedex())),
+      child: const Text("View caught pokemon"),
     );
   }
 }

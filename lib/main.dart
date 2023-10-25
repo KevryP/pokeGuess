@@ -24,7 +24,7 @@ class MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        body: Center(child: Login()),
+        body: Center(child: GuessGame()),
       ),
     );
   }
