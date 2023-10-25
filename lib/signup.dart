@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:poke_guess/login.dart';
 import 'package:poke_guess/widgets/game_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -14,6 +16,7 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +59,7 @@ class _SignUpState extends State<SignUp> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   //Successful
-                  onSignUp();
+                  _register();
                 }
                 return;
               },
@@ -79,15 +82,26 @@ class _SignUpState extends State<SignUp> {
         ));
   }
 
-  onSignUp() async {
+  _register() async {
     try {
-      print("Sign up successful");
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text, password: _passwordController.text);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => const GuessGame()));
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text)
+          .then((value) => _addUser())
+          .then((value) => Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const GuessGame())));
     } catch (e) {
       print("Signup error: $e");
     }
+  }
+
+  Future<void> _addUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    return users.doc(user?.uid).set({
+      'email': _emailController.text,
+    }).catchError((error) {
+      print("Error adding to DB: $error");
+    });
   }
 }

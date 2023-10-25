@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'poke_widget.dart';
 import 'name_assist.dart';
@@ -19,6 +21,7 @@ class GuessGameState extends State<GuessGame> {
   List<String> guesses = [];
   String guess = "";
   TextEditingController guessController = TextEditingController();
+  CollectionReference user = FirebaseFirestore.instance.collection('users');
 
   void updateGuesses(String guess) {
     setState(() {
