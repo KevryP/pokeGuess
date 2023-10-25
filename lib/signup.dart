@@ -95,7 +95,7 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
-  Future<void> _addUser() async {
+  Future<void> _addUser() {
     User? user = FirebaseAuth.instance.currentUser;
 
     return users.doc(user?.uid).set({

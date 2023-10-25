@@ -21,7 +21,17 @@ class GuessGameState extends State<GuessGame> {
   List<String> guesses = [];
   String guess = "";
   TextEditingController guessController = TextEditingController();
-  CollectionReference user = FirebaseFirestore.instance.collection('users');
+  CollectionReference collectionRef =
+      FirebaseFirestore.instance.collection('users');
+
+  Future<void> _addPokemon(String name) {
+    User? user = FirebaseAuth.instance.currentUser;
+    print("Caught!");
+    return collectionRef.doc(user?.uid).collection('caught').doc(name).set({
+      'name': name,
+      'level': 5,
+    });
+  }
 
   void updateGuesses(String guess) {
     setState(() {
@@ -96,6 +106,7 @@ class GuessGameState extends State<GuessGame> {
     }
     if (pokeWidge.getPokeName() == val) {
       //Win
+      _addPokemon(pokeWidge.getPokeName()!);
       pokeWidge.getImageBox()?.updateColor();
       pokeWidge.getImageBox()?.updateBlur(20, 20);
       isOver = true;
