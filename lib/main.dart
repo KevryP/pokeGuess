@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:poke_guess/login.dart';
 import 'package:poke_guess/widgets/game_widget.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MainApp());
 }
 
@@ -17,17 +24,7 @@ class MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.black45,
-        body: Center(
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 100),
-                child: GuessGame(),
-              ),
-            ],
-          ),
-        ),
+        body: Center(child: Login()),
       ),
     );
   }
