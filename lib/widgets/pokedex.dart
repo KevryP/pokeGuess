@@ -24,17 +24,20 @@ class _PokedexState extends State<Pokedex> {
   List<String> caughtPokes = [];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: pokedexWidget());
+    return SizedBox(width: 150, height: 150, child: pokedexWidget());
   }
 
   Widget pokedexWidget() {
     return FutureBuilder(
       future: _getCaught(),
       builder: (context, snapshot) {
+        if (snapshot.hasData == false) {
+          return const Text("Loading...");
+        }
         return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              return Text(snapshot.data![index].toString());
+              return Text(snapshot.data![index]['name'].toString());
             });
       },
     );
