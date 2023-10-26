@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:poke_guess/widgets/pokedex.dart';
 import 'poke_widget.dart';
 import 'name_assist.dart';
 
@@ -18,6 +19,7 @@ class GuessGame extends StatefulWidget {
 
 class GuessGameState extends State<GuessGame> {
   bool isOver = false;
+  bool showPokedex = false;
   List<String> guesses = [];
   String guess = "";
   TextEditingController guessController = TextEditingController();
@@ -57,6 +59,7 @@ class GuessGameState extends State<GuessGame> {
     return Scaffold(
       backgroundColor: Colors.black38,
       body: Row(children: [
+        const Expanded(child: Text("left")),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 100),
@@ -83,6 +86,16 @@ class GuessGameState extends State<GuessGame> {
             ),
           ),
         ),
+        Expanded(
+          child: Column(
+            children: [
+              const Spacer(),
+              pokedexButton(),
+              if (showPokedex) const Pokedex(),
+              const Spacer(),
+            ],
+          ),
+        )
       ]),
     );
   }
@@ -137,6 +150,15 @@ class GuessGameState extends State<GuessGame> {
       child: const Text(
         "Reset",
       ),
+    );
+  }
+
+  ElevatedButton pokedexButton() {
+    return ElevatedButton(
+      onPressed: () => setState(() {
+        showPokedex = !showPokedex;
+      }),
+      child: const Text("View caught pokemon"),
     );
   }
 }

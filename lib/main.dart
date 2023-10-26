@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poke_guess/login.dart';
 import 'package:poke_guess/widgets/game_widget.dart';
@@ -20,11 +21,12 @@ class MainApp extends StatefulWidget {
 }
 
 class MainAppState extends State<MainApp> {
+  User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
-        body: Center(child: Login()),
+        body: Center(child: user == null ? const Login() : const GuessGame()),
       ),
     );
   }
