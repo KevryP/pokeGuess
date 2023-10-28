@@ -82,7 +82,7 @@ class PokeNamesState extends State<PokeNames> {
           itemCount: filteredNames?.length,
           itemBuilder: (BuildContext context, int index) {
             return Text(
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black),
                 filteredNames![index].name);
           }),
     );

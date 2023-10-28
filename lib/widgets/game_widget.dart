@@ -59,43 +59,51 @@ class GuessGameState extends State<GuessGame> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black87,
-      body: Row(children: [
-        const Expanded(child: Text("left")),
-        Expanded(
-          child: Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 100),
-              child: Column(
-                children: [
-                  Text(
-                    isOver == true ? pokeWidge.getPokeName()! : "Who's that",
-                    style: const TextStyle(fontFamily: 'Pokemon', fontSize: 50),
-                  ),
-
-                  Padding(padding: const EdgeInsets.all(50), child: pokeWidge),
-
-                  GuessBox(),
-                  if (isOver == true) resetBtn(),
-                  resetBtn(), //For testing, should be removed in release
-                ],
-              ),
-            ),
-          ),
-        ),
-        Expanded(
+    return Expanded(
+      child: Container(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 100),
           child: Column(
             children: [
-              const Spacer(),
-              pokedexButton(),
-              if (showPokedex) const Pokedex(),
-              const Spacer(),
+              Stack(
+                children: [
+                  Text(
+                    isOver == true
+                        ? pokeWidge.getPokeName()!
+                        : "Who's that Pokémon?",
+                    style: TextStyle(
+                        fontFamily: 'Pokemon',
+                        fontSize: 50,
+                        foreground: Paint()
+                          ..style = PaintingStyle.stroke
+                          ..strokeWidth = 10
+                          ..color = const Color.fromARGB(255, 3, 98, 175)),
+                  ),
+                  Text(
+                    isOver == true
+                        ? pokeWidge.getPokeName()!
+                        : "Who's that Pokémon?",
+                    style: TextStyle(
+                        fontFamily: 'Pokemon',
+                        fontSize: 50,
+                        foreground: Paint()
+                          ..style = PaintingStyle.fill
+                          ..strokeWidth = 6
+                          ..color = Colors.yellow),
+                  ),
+                ],
+              ),
+
+              Padding(padding: const EdgeInsets.all(50), child: pokeWidge),
+
+              GuessBox(),
+              if (isOver == true) resetBtn(),
+              resetBtn(), //For testing, should be removed in release
             ],
           ),
-        )
-      ]),
+        ),
+      ),
     );
   }
 
