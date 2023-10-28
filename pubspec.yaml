@@ -12,6 +12,7 @@ dependencies:
   firebase_core: ^2.19.0
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.8
   http: ^0.13.3
 
 dev_dependencies:

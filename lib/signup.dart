@@ -20,7 +20,40 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: signUpForm());
+    return Scaffold(
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.red,
+                border: Border.all(
+                  color: Colors.blueAccent,
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
+                )),
+            width: 300,
+            height: 400,
+            child: Column(children: [
+              const Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    fontFamily: 'Pokemon',
+                    fontSize: 30,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              signUpForm()
+            ]),
+          ),
+        ),
+      ],
+    ));
   }
 
   Form signUpForm() {
@@ -33,6 +66,8 @@ class _SignUpState extends State<SignUp> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Email address",
+                filled: true,
+                fillColor: Colors.white,
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -41,11 +76,14 @@ class _SignUpState extends State<SignUp> {
                 return null;
               },
             ),
+            const Padding(padding: EdgeInsets.all(10)),
             TextFormField(
               controller: _passwordController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Password",
+                filled: true,
+                fillColor: Colors.white,
               ),
               obscureText: true,
               validator: (value) {
@@ -55,28 +93,49 @@ class _SignUpState extends State<SignUp> {
                 return null;
               },
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  //Successful
-                  _register();
-                }
-                return;
-              },
-              child: const Text("Sign Up"),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 0, 183, 255)),
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    //Successful
+                    _register();
+                  }
+                  return;
+                },
+                child: const Text("Create account"),
+              ),
             ),
-            Column(
-              children: [
-                const Text("Already have an account?"),
-                ElevatedButton(
-                  onPressed: () {
-                    //Change to SignUp Page
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => const Login()));
-                  },
-                  child: const Text("Login"),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: Column(
+                children: [
+                  const Text(
+                    "Already have an account?",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(30),
+                          backgroundColor:
+                              const Color.fromARGB(255, 0, 183, 255)),
+                      onPressed: () {
+                        //Change to SignUp Page
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Login()));
+                      },
+                      child: const Text("Login"),
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ));

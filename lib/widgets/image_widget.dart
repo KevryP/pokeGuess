@@ -52,13 +52,17 @@ class ImageBoxState extends State<ImageBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Stack(children: [
-        pokeBackground(),
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
         backgroundBlur(),
-        Positioned(top: 0, left: 20, child: pokeImg())
-      ])
-    ]);
+      ]),
+      child: Column(children: [
+        Stack(children: [
+          pokeBackground(),
+          Positioned(top: 0, left: 20, child: pokeImg())
+        ])
+      ]),
+    );
   }
 
   ImageFiltered pokeImg() {
@@ -81,10 +85,11 @@ class ImageBoxState extends State<ImageBox> {
     );
   }
 
-  BackdropFilter backgroundBlur() {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-      child: pokeBackground(),
+  BoxShadow backgroundBlur() {
+    return const BoxShadow(
+      color: Colors.red,
+      spreadRadius: 10,
+      blurRadius: 30,
     );
   }
 }

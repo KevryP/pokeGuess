@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:poke_guess/login.dart';
 import 'package:poke_guess/widgets/game_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:poke_guess/widgets/home.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -26,7 +27,8 @@ class MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Center(child: user == null ? const Login() : const GuessGame()),
+        body:
+            Center(child: user == null ? const GuessGame() : const GuessGame()),
       ),
     );
   }

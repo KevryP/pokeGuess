@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:poke_guess/widgets/pokedex.dart';
 import 'poke_widget.dart';
 import 'name_assist.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 PokeState pokeState = pokeState = PokeState();
 PokeWidget pokeWidge = PokeWidget(
@@ -23,6 +24,8 @@ class GuessGameState extends State<GuessGame> {
   List<String> guesses = [];
   String guess = "";
   TextEditingController guessController = TextEditingController();
+  TextEditingController disabledController = TextEditingController();
+
   CollectionReference collectionRef =
       FirebaseFirestore.instance.collection('users');
 
@@ -57,32 +60,28 @@ class GuessGameState extends State<GuessGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black38,
+      backgroundColor: Colors.black87,
       body: Row(children: [
         const Expanded(child: Text("left")),
         Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 100),
-            child: Column(
-              children: [
-                pokeWidge,
-                Text(
-                  isOver == true ? pokeWidge.getPokeName()! : "Who's that",
-                  style: const TextStyle(fontFamily: 'Pokemon', fontSize: 50),
-                ),
-                SizedBox(
-                  width: 300,
-                  child: Column(
-                    children: [
-                      inputField(),
-                      for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
-                      PokeNames(guessInput: guess),
-                      if (isOver == true) resetBtn(),
-                      resetBtn(), //For testing, should be removed in release
-                    ],
+          child: Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 100),
+              child: Column(
+                children: [
+                  Text(
+                    isOver == true ? pokeWidge.getPokeName()! : "Who's that",
+                    style: const TextStyle(fontFamily: 'Pokemon', fontSize: 50),
                   ),
-                ),
-              ],
+
+                  Padding(padding: const EdgeInsets.all(50), child: pokeWidge),
+
+                  GuessBox(),
+                  if (isOver == true) resetBtn(),
+                  resetBtn(), //For testing, should be removed in release
+                ],
+              ),
             ),
           ),
         ),
@@ -100,11 +99,61 @@ class GuessGameState extends State<GuessGame> {
     );
   }
 
-  TextField inputField() {
+  Container GuessBox() {
+    return Container(
+      width: 300,
+      decoration: const BoxDecoration(color: Colors.white),
+      child: Column(
+        children: [
+          for (int i = 0; i < guesses.length; i++)
+            if (isOver && i == guesses.length - 1)
+              prevGuessContainer(guesses[i], true)
+            else
+              prevGuessContainer(guesses[i], false),
+          for (int i = guesses.length; i < 5; i++)
+            if (i == guesses.length && !isOver)
+              inputField(true)
+            else
+              inputField(false),
+          PokeNames(guessInput: guess),
+        ],
+      ),
+    );
+  }
+
+  Container prevGuessContainer(guess, correct) {
+    return Container(
+      color: Colors.white,
+      height: 48,
+      width: 300,
+      child: Center(
+        child: Row(children: [
+          Text(
+            guess.toUpperCase(),
+            style: const TextStyle(color: Colors.black),
+          ),
+          const Spacer(),
+          if (correct)
+            SvgPicture.asset(
+              'Pokeball.svg',
+              height: 100,
+            )
+          else
+            SvgPicture.asset(
+              'PokeballGrey.svg',
+              height: 100,
+            ),
+        ]),
+      ),
+    );
+  }
+
+  TextField inputField(enabled) {
     return TextField(
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      controller: guessController,
+      style: const TextStyle(color: Colors.black),
+      cursorColor: Colors.black,
+      enabled: enabled,
+      controller: enabled ? guessController : disabledController,
       decoration: const InputDecoration(
         hintText: "Enter your guess",
       ),
@@ -119,6 +168,8 @@ class GuessGameState extends State<GuessGame> {
     }
     if (pokeWidge.getPokeName() == val) {
       //Win
+      updateGuesses(val);
+
       _addPokemon(pokeWidge.getPokeName()!);
       pokeWidge.getImageBox()?.updateColor();
       pokeWidge.getImageBox()?.updateBlur(20, 20);
