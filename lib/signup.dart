@@ -125,7 +125,7 @@ class _SignUpState extends State<SignUp> {
                           backgroundColor:
                               const Color.fromARGB(255, 0, 183, 255)),
                       onPressed: () {
-                        //Change to SignUp Page
+                        //Change to Login Page
                         Navigator.push(
                             context,
                             MaterialPageRoute(

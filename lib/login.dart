@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poke_guess/signup.dart';
+import 'package:poke_guess/widgets/game_page.dart';
 import 'package:poke_guess/widgets/game_widget.dart';
 
 class Login extends StatefulWidget {
@@ -17,7 +18,40 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: loginForm());
+    return Scaffold(
+        body: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Center(
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.red,
+                border: Border.all(
+                  color: Colors.blueAccent,
+                ),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
+                )),
+            width: 300,
+            height: 400,
+            child: Column(children: [
+              const Padding(
+                padding: EdgeInsets.all(10),
+                child: Text(
+                  "Login",
+                  style: TextStyle(
+                    fontFamily: 'Pokemon',
+                    fontSize: 30,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              loginForm()
+            ]),
+          ),
+        ),
+      ],
+    ));
   }
 
   Form loginForm() {
@@ -30,6 +64,8 @@ class _LoginState extends State<Login> {
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Email address",
+                filled: true,
+                fillColor: Colors.white,
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -38,11 +74,14 @@ class _LoginState extends State<Login> {
                 return null;
               },
             ),
+            const Padding(padding: EdgeInsets.all(10)),
             TextFormField(
               controller: _passwordController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: "Password",
+                filled: true,
+                fillColor: Colors.white,
               ),
               obscureText: true,
               validator: (value) {
@@ -52,30 +91,50 @@ class _LoginState extends State<Login> {
                 return null;
               },
             ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  //Succesfful
-                  onLogin();
-                }
-                return;
-              },
-              child: const Text("Login"),
-            ),
-            Column(
-              children: [
-                const Text("Don't have an account?"),
-                ElevatedButton(
-                  onPressed: () {
-                    //Change to SignUp Page
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUp()));
-                  },
-                  child: const Text("Sign Up"),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 0, 183, 255),
                 ),
-              ],
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    //Succesfful
+                    onLogin();
+                  }
+                  return;
+                },
+                child: const Text("Login"),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  const Text(
+                    "Don't have an account?",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(30),
+                          backgroundColor:
+                              const Color.fromARGB(255, 0, 183, 255)),
+                      onPressed: () {
+                        //Change to SignUp Page
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUp()));
+                      },
+                      child: const Text("SignUp"),
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ));
@@ -88,7 +147,9 @@ class _LoginState extends State<Login> {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const GuessGame(),
+            builder: (context) => const Material(
+              child: GamePage(),
+            ),
           ));
     } catch (e) {
       print("Login error: $e");

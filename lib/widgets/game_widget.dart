@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:poke_guess/widgets/autoname.dart';
 import 'package:poke_guess/widgets/pokedex.dart';
 import 'poke_widget.dart';
 import 'name_assist.dart';
@@ -19,7 +20,7 @@ class GuessGame extends StatefulWidget {
 }
 
 class GuessGameState extends State<GuessGame> {
-  bool isOver = false;
+  bool isWin = false;
   bool showPokedex = false;
   List<String> guesses = [];
   String guess = "";
@@ -61,15 +62,14 @@ class GuessGameState extends State<GuessGame> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        color: Colors.white,
         child: Padding(
-          padding: const EdgeInsets.only(top: 100),
+          padding: const EdgeInsets.only(top: 50),
           child: Column(
             children: [
               Stack(
                 children: [
                   Text(
-                    isOver == true
+                    isWin == true
                         ? pokeWidge.getPokeName()!
                         : "Who's that Pokémon?",
                     style: TextStyle(
@@ -81,7 +81,7 @@ class GuessGameState extends State<GuessGame> {
                           ..color = const Color.fromARGB(255, 3, 98, 175)),
                   ),
                   Text(
-                    isOver == true
+                    isWin == true
                         ? pokeWidge.getPokeName()!
                         : "Who's that Pokémon?",
                     style: TextStyle(
@@ -98,7 +98,7 @@ class GuessGameState extends State<GuessGame> {
               Padding(padding: const EdgeInsets.all(50), child: pokeWidge),
 
               GuessBox(),
-              if (isOver == true) resetBtn(),
+              if (isWin == true) resetBtn(),
               resetBtn(), //For testing, should be removed in release
             ],
           ),
@@ -107,51 +107,54 @@ class GuessGameState extends State<GuessGame> {
     );
   }
 
-  Container GuessBox() {
-    return Container(
-      width: 300,
-      decoration: const BoxDecoration(color: Colors.white),
+  SizedBox GuessBox() {
+    return SizedBox(
+      width: 500,
       child: Column(
         children: [
           for (int i = 0; i < guesses.length; i++)
-            if (isOver && i == guesses.length - 1)
+            if (isWin && i == guesses.length - 1)
               prevGuessContainer(guesses[i], true)
             else
               prevGuessContainer(guesses[i], false),
           for (int i = guesses.length; i < 5; i++)
-            if (i == guesses.length && !isOver)
-              inputField(true)
+            if (i == guesses.length && !isWin)
+              AutoName(onSubmit: onSubmit, isActive: true)
             else
-              inputField(false),
-          PokeNames(guessInput: guess),
+              AutoName(onSubmit: onSubmit, isActive: false),
         ],
       ),
     );
   }
 
-  Container prevGuessContainer(guess, correct) {
-    return Container(
-      color: Colors.white,
-      height: 48,
-      width: 300,
-      child: Center(
-        child: Row(children: [
-          Text(
-            guess.toUpperCase(),
-            style: const TextStyle(color: Colors.black),
-          ),
-          const Spacer(),
-          if (correct)
-            SvgPicture.asset(
-              'Pokeball.svg',
-              height: 100,
-            )
-          else
-            SvgPicture.asset(
-              'PokeballGrey.svg',
-              height: 100,
+  Padding prevGuessContainer(guess, correct) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        height: 48,
+        width: 300,
+        child: Center(
+          child: Row(children: [
+            Text(
+              guess.toUpperCase(),
+              style: const TextStyle(color: Colors.black),
             ),
-        ]),
+            const Spacer(),
+            if (correct)
+              SvgPicture.asset(
+                'Pokeball.svg',
+                height: 100,
+              )
+            else
+              SvgPicture.asset(
+                'PokeballGrey.svg',
+                height: 100,
+              ),
+          ]),
+        ),
       ),
     );
   }
@@ -177,17 +180,15 @@ class GuessGameState extends State<GuessGame> {
     if (pokeWidge.getPokeName() == val) {
       //Win
       updateGuesses(val);
-
       _addPokemon(pokeWidge.getPokeName()!);
       pokeWidge.getImageBox()?.updateColor();
       pokeWidge.getImageBox()?.updateBlur(20, 20);
-      isOver = true;
+      isWin = true;
     } else {
       updateGuesses(val);
       pokeWidge.getImageBox()?.updateBlur(5, 5);
       if (guesses.length > 4) {
         //Loss
-        isOver = true;
         pokeWidge.getImageBox()?.updateColor();
         pokeWidge.getImageBox()?.updateBlur(20, 20);
       }
@@ -197,7 +198,7 @@ class GuessGameState extends State<GuessGame> {
   }
 
   resetGame() {
-    isOver = false;
+    isWin = false;
     pokeWidge.randomizePoke();
     guesses = [];
     setState(() {});
@@ -207,7 +208,7 @@ class GuessGameState extends State<GuessGame> {
     return ElevatedButton(
       onPressed: resetGame,
       child: const Text(
-        "Reset",
+        "(DELETE)Reset",
       ),
     );
   }

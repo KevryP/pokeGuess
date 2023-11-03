@@ -28,7 +28,7 @@ class MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Center(child: user == null ? const GamePage() : const GamePage()),
+        body: Center(child: user == null ? const Login() : const GamePage()),
       ),
     );
   }
