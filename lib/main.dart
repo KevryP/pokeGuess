@@ -1,10 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poke_guess/login.dart';
 import 'package:poke_guess/widgets/game_page.dart';
-import 'package:poke_guess/widgets/game_widget.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:poke_guess/widgets/home.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -23,12 +19,11 @@ class MainApp extends StatefulWidget {
 }
 
 class MainAppState extends State<MainApp> {
-  User? user = FirebaseAuth.instance.currentUser;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
-        body: Center(child: user == null ? const Login() : const GamePage()),
+        body: Center(child: GamePage()),
       ),
     );
   }

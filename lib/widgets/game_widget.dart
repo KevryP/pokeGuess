@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poke_guess/widgets/autoname.dart';
-import 'package:poke_guess/widgets/pokedex.dart';
 import 'poke_widget.dart';
-import 'name_assist.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 PokeState pokeState = pokeState = PokeState();
@@ -30,13 +28,19 @@ class GuessGameState extends State<GuessGame> {
   CollectionReference collectionRef =
       FirebaseFirestore.instance.collection('users');
 
-  Future<void> _addPokemon(String name) {
+  Future<bool> _addPokemon(String name) async {
     User? user = FirebaseAuth.instance.currentUser;
     print("Caught!");
-    return collectionRef.doc(user?.uid).collection('caught').doc(name).set({
-      'name': name,
-      'level': 5,
-    });
+
+    if (user != null) {
+      await collectionRef.doc(user.uid).collection('caught').doc(name).set({
+        'name': name,
+        'level': 5,
+      });
+      return true;
+    } else {
+      return true;
+    }
   }
 
   void updateGuesses(String guess) {
@@ -94,12 +98,9 @@ class GuessGameState extends State<GuessGame> {
                   ),
                 ],
               ),
-
               Padding(padding: const EdgeInsets.all(50), child: pokeWidge),
-
               GuessBox(),
               if (isWin == true) resetBtn(),
-              resetBtn(), //For testing, should be removed in release
             ],
           ),
         ),
@@ -137,23 +138,26 @@ class GuessGameState extends State<GuessGame> {
         height: 48,
         width: 300,
         child: Center(
-          child: Row(children: [
-            Text(
-              guess.toUpperCase(),
-              style: const TextStyle(color: Colors.black),
-            ),
-            const Spacer(),
-            if (correct)
-              SvgPicture.asset(
-                'Pokeball.svg',
-                height: 100,
-              )
-            else
-              SvgPicture.asset(
-                'PokeballGrey.svg',
-                height: 100,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                guess.toUpperCase(),
+                style: const TextStyle(color: Colors.black),
               ),
-          ]),
+              const Spacer(),
+              if (correct)
+                SvgPicture.asset(
+                  'Pokeball.svg',
+                  height: 100,
+                )
+              else
+                SvgPicture.asset(
+                  'PokeballGrey.svg',
+                  height: 100,
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -194,7 +198,7 @@ class GuessGameState extends State<GuessGame> {
       }
     }
     guessController.text = "";
-    setState(() {});
+    setState(() {/* A guess was received, progress game */});
   }
 
   resetGame() {
@@ -208,7 +212,7 @@ class GuessGameState extends State<GuessGame> {
     return ElevatedButton(
       onPressed: resetGame,
       child: const Text(
-        "(DELETE)Reset",
+        "Play Again",
       ),
     );
   }
