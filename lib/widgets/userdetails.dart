@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poke_guess/login_dialog.dart';
 import 'package:poke_guess/signup_dialog.dart';
+import 'package:poke_guess/widgets/trainercard.dart';
 
 class UserDetails extends StatefulWidget {
   const UserDetails({super.key});
@@ -26,6 +27,7 @@ class _UserDetailsState extends State<UserDetails> {
     return Card(
       child: Column(children: [
         Text(user != null ? user!.email! : "Unknown Trainer"),
+        const TrainerCard(),
         (user == null)
             ? Row(children: [
                 ElevatedButton(

@@ -66,6 +66,8 @@ class ImageBoxState extends State<ImageBox> {
   }
 
   ImageFiltered pokeImg() {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
         child: ColorFiltered(
@@ -73,7 +75,7 @@ class ImageBoxState extends State<ImageBox> {
           child: Image.network(
             widget.sprite,
             fit: BoxFit.fill,
-            width: 300,
+            width: screenWidth / 6.5,
           ),
         ));
   }
