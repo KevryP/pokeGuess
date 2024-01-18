@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:poke_guess/widgets/game_widget.dart';
+import 'package:poke_guess/widgets/trainercard.dart';
 import 'package:poke_guess/widgets/userdetails.dart';
 
 class GamePage extends StatefulWidget {
@@ -12,23 +13,29 @@ class GamePage extends StatefulWidget {
 class GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black87,
-      child: const Stack(children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-                child: Column(children: [
-              Spacer(),
-              Card(child: UserDetails()),
-              Spacer()
-            ])),
-            GuessGame(),
-            Spacer(),
-          ],
-        ),
-      ]),
+    return SingleChildScrollView(
+      child: Container(
+        child: const Stack(children: [
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                      Card(child: UserDetails()),
+                    ])),
+                GuessGame(),
+                Expanded(child: Text("")),
+              ],
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }

@@ -21,8 +21,10 @@ class MainApp extends StatefulWidget {
 class MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
+    return MaterialApp(
+      theme: ThemeData(
+          scaffoldBackgroundColor: const Color.fromARGB(255, 26, 26, 27)),
+      home: const Scaffold(
         body: Center(child: GamePage()),
       ),
     );

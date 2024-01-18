@@ -73,7 +73,7 @@ class GuessGameState extends State<GuessGame> {
               Stack(
                 children: [
                   Text(
-                    isWin == true
+                    (isWin || (guesses.length >= 5))
                         ? pokeWidge.getPokeName()!
                         : "Who's that Pokémon?",
                     style: TextStyle(
@@ -85,7 +85,7 @@ class GuessGameState extends State<GuessGame> {
                           ..color = const Color.fromARGB(255, 3, 98, 175)),
                   ),
                   Text(
-                    isWin == true
+                    (isWin || (guesses.length >= 5))
                         ? pokeWidge.getPokeName()!
                         : "Who's that Pokémon?",
                     style: TextStyle(
@@ -100,7 +100,7 @@ class GuessGameState extends State<GuessGame> {
               ),
               Padding(padding: const EdgeInsets.all(50), child: pokeWidge),
               GuessBox(),
-              if (isWin == true) resetBtn(),
+              if (isWin || (guesses.length >= 5)) resetBtn(),
             ],
           ),
         ),
