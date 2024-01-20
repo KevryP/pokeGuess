@@ -59,7 +59,7 @@ class ImageBoxState extends State<ImageBox> {
       child: Column(children: [
         Stack(children: [
           pokeBackground(),
-          Positioned(top: 0, left: 20, child: pokeImg())
+          pokeImg(),
         ])
       ]),
     );
@@ -67,23 +67,32 @@ class ImageBoxState extends State<ImageBox> {
 
   ImageFiltered pokeImg() {
     double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     return ImageFiltered(
-        imageFilter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
+        imageFilter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(gradientColor, BlendMode.modulate),
           child: Image.network(
             widget.sprite,
             fit: BoxFit.fill,
+            height: screenHeight / 3.5,
             width: screenWidth / 6.5,
           ),
         ));
   }
 
   ClipRRect pokeBackground() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
-      child: Image.asset('../assets/witp.jpg'),
+      child: Image.asset(
+        '../assets/witp.jpg',
+        fit: BoxFit.fill,
+        height: screenHeight / 3.5,
+        width: screenWidth / 3.5,
+      ),
     );
   }
 

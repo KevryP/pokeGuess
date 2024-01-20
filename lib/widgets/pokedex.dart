@@ -21,6 +21,14 @@ class _PokedexState extends State<Pokedex> {
     return qSnapshot.docs.map((doc) => doc.data()).toList();
   }
 
+  Future<int> _getNumCaught() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    AggregateQuerySnapshot qSnapshot =
+        await collectionRef.doc(user?.uid).collection('caught').count().get();
+
+    return qSnapshot.count;
+  }
+
   List<String> caughtPokes = [];
   @override
   Widget build(BuildContext context) {

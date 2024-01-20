@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:poke_guess/widgets/autoname.dart';
+import 'package:poke_guess/widgets/userdetails.dart';
 import 'poke_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -68,39 +69,24 @@ class GuessGameState extends State<GuessGame> {
       child: Container(
         child: Padding(
           padding: const EdgeInsets.only(top: 50),
-          child: Column(
+          child: Row(
             children: [
-              Stack(
-                children: [
-                  Text(
-                    (isWin || (guesses.length >= 5))
-                        ? pokeWidge.getPokeName()!
-                        : "Who's that Pokémon?",
-                    style: TextStyle(
-                        fontFamily: 'Pokemon',
-                        fontSize: 50,
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 10
-                          ..color = const Color.fromARGB(255, 3, 98, 175)),
-                  ),
-                  Text(
-                    (isWin || (guesses.length >= 5))
-                        ? pokeWidge.getPokeName()!
-                        : "Who's that Pokémon?",
-                    style: TextStyle(
-                        fontFamily: 'Pokemon',
-                        fontSize: 50,
-                        foreground: Paint()
-                          ..style = PaintingStyle.fill
-                          ..strokeWidth = 6
-                          ..color = Colors.yellow),
-                  ),
-                ],
+              const Card(child: UserDetails()),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    label(),
+                    Padding(
+                        padding: const EdgeInsets.all(50), child: pokeWidge),
+                    guessBox(),
+                    if (isWin || (guesses.length >= 5)) resetBtn(),
+                  ],
+                ),
               ),
-              Padding(padding: const EdgeInsets.all(50), child: pokeWidge),
-              GuessBox(),
-              if (isWin || (guesses.length >= 5)) resetBtn(),
+              const Expanded(child: Text(""))
             ],
           ),
         ),
@@ -108,7 +94,38 @@ class GuessGameState extends State<GuessGame> {
     );
   }
 
-  SizedBox GuessBox() {
+  Stack label() {
+    return Stack(
+      children: [
+        Text(
+          (isWin || (guesses.length >= 5))
+              ? pokeWidge.getPokeName()!
+              : "Who's that Pokémon?",
+          style: TextStyle(
+              fontFamily: 'Pokemon',
+              fontSize: 50,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 10
+                ..color = const Color.fromARGB(255, 3, 98, 175)),
+        ),
+        Text(
+          (isWin || (guesses.length >= 5))
+              ? pokeWidge.getPokeName()!
+              : "Who's that Pokémon?",
+          style: TextStyle(
+              fontFamily: 'Pokemon',
+              fontSize: 50,
+              foreground: Paint()
+                ..style = PaintingStyle.fill
+                ..strokeWidth = 6
+                ..color = Colors.yellow),
+        ),
+      ],
+    );
+  }
+
+  SizedBox guessBox() {
     return SizedBox(
       width: 500,
       child: Column(

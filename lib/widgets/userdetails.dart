@@ -26,31 +26,35 @@ class _UserDetailsState extends State<UserDetails> {
   Widget build(BuildContext context) {
     return Card(
       child: Column(children: [
-        Text(user != null ? user!.email! : "Unknown Trainer"),
-        const TrainerCard(),
-        (user == null)
-            ? Row(children: [
-                ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return LoginDialog(signInFunction: _signIn);
-                          });
-                    },
-                    child: const Text("Log In")),
-                ElevatedButton(
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SignupDialog(signUpFunction: _signUp);
-                          });
-                    },
-                    child: const Text("Sign Up")),
-              ])
-            : ElevatedButton(
-                onPressed: () => _signOut(), child: const Text("Sign Out")),
+        TrainerCard(user: user),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            (user == null)
+                ? Row(children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return LoginDialog(signInFunction: _signIn);
+                              });
+                        },
+                        child: const Text("Log In")),
+                    ElevatedButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return SignupDialog(signUpFunction: _signUp);
+                              });
+                        },
+                        child: const Text("Sign Up")),
+                  ])
+                : ElevatedButton(
+                    onPressed: () => _signOut(), child: const Text("Sign Out")),
+          ],
+        ),
       ]),
     );
   }

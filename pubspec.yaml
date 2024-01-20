@@ -29,3 +29,6 @@ flutter:
     - family: Pokemon
       fonts:
         - asset: fonts/Pokemon-Solid.ttf
+    - family: PokemonGb
+      fonts:
+        - asset: fonts/PokemonGb-RAeo.ttf
