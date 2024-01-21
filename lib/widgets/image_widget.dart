@@ -70,7 +70,7 @@ class ImageBoxState extends State<ImageBox> {
     double screenHeight = MediaQuery.of(context).size.height;
 
     return ImageFiltered(
-        imageFilter: ImageFilter.blur(sigmaX: 0, sigmaY: 0),
+        imageFilter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
         child: ColorFiltered(
           colorFilter: ColorFilter.mode(gradientColor, BlendMode.modulate),
           child: Image.network(
