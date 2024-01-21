@@ -22,69 +22,76 @@ class _TrainerCardState extends State<TrainerCard> {
     return background();
   }
 
-  Future<int> _getNumCaught() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    AggregateQuerySnapshot qSnapshot =
-        await collectionRef.doc(user?.uid).collection('caught').count().get();
-
-    return qSnapshot.count;
-  }
-
-  /*Widget pokedexWidget(screenWidth) {
-    return FutureBuilder(
-      future: _getNumCaught(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData == false) {
-          return const Text("Loading...");
-        }
-        return Container(
-            margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-            width: screenWidth / 6,
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(4.0),
-              color: Colors.blue.shade100,
-            ),
-            child: FittedBox(
-              fit: BoxFit.fitHeight,
-              child: Row(children: [
-                Text(
-                  "Pokemon Caught: ${snapshot.data!}",
-                  style: const TextStyle(fontFamily: 'PokemonGb'),
-                ),
-              ]),
-            ));
-      },
-    );
-  }*/
-
-  Widget pokedexWidget(screenWidth) {
-    //var dbServ = Provider
+  Widget pokeStatsWidget(screenWidth) {
     return Consumer<FirebaseDatabaseService>(
       builder: (context, value, child) {
         return FutureBuilder(
-          future: value.getNumCaught(),
+          future: value.getUserData(),
           builder: (context, snapshot) {
             if (snapshot.hasData == false) {
               return const Text("Loading...");
             }
-            return Container(
-                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                width: screenWidth / 6,
-                alignment: Alignment.centerLeft,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4.0),
-                  color: Colors.blue.shade100,
+            return Column(
+              children: [
+                Expanded(
+                  child: Container(
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: screenWidth / 6,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.0),
+                        color: Colors.blue.shade100,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Row(children: [
+                          Text(
+                            "Email: ${snapshot.data!['email']}",
+                            style: const TextStyle(fontFamily: 'PokemonGb'),
+                          ),
+                        ]),
+                      )),
                 ),
-                child: FittedBox(
-                  fit: BoxFit.fitHeight,
-                  child: Row(children: [
-                    Text(
-                      "Pokemon Caught: ${snapshot.data!}",
-                      style: const TextStyle(fontFamily: 'PokemonGb'),
-                    ),
-                  ]),
-                ));
+                Expanded(
+                  child: Container(
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: screenWidth / 6,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.0),
+                        color: Colors.blue.shade100,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Row(children: [
+                          Text(
+                            "Total Caught: ${snapshot.data!['catches']}",
+                            style: const TextStyle(fontFamily: 'PokemonGb'),
+                          ),
+                        ]),
+                      )),
+                ),
+                Expanded(
+                  child: Container(
+                      margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                      width: screenWidth / 6,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4.0),
+                        color: Colors.blue.shade100,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.fitHeight,
+                        child: Row(children: [
+                          Text(
+                            "Longest Streak: ${snapshot.data!['longestStreak']}",
+                            style: const TextStyle(fontFamily: 'PokemonGb'),
+                          ),
+                        ]),
+                      )),
+                ),
+              ],
+            );
           },
         );
       },
@@ -109,31 +116,8 @@ class _TrainerCardState extends State<TrainerCard> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            child: cardTextContainer(
-                                screenWidth,
-                                screenHeight,
-                                "Email Address: ",
-                                (widget.user == null
-                                    ? ""
-                                    : widget.user!.email!)),
-                          ),
-                        ),
-                        Expanded(child: pokedexWidget(screenWidth)),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            child: cardTextContainer(
-                                screenWidth,
-                                screenHeight,
-                                "Current Streak: ",
-                                (widget.user == null
-                                    ? ""
-                                    : widget.user!.email!)),
-                          ),
-                        ),
+                        if (widget.user != null)
+                          Expanded(child: pokeStatsWidget(screenWidth)),
                       ]),
                   userImageContainer(screenWidth, screenHeight)
                 ],
@@ -146,30 +130,6 @@ class _TrainerCardState extends State<TrainerCard> {
         ],
       ),
     );
-  }
-
-  Container cardTextContainer(
-      double screenWidth, double screenHeight, String label, String userInfo) {
-    return Container(
-        alignment: Alignment.centerLeft,
-        width: screenWidth / 6,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4.0),
-          color: Colors.blue.shade100,
-        ),
-        child: FittedBox(
-          fit: BoxFit.fitHeight,
-          child: Row(children: [
-            Text(
-              label,
-              style: const TextStyle(fontFamily: 'PokemonGb'),
-            ),
-            Text(
-              userInfo ?? "",
-              style: const TextStyle(fontFamily: 'PokemonGb'),
-            )
-          ]),
-        ));
   }
 
   Container cardLabelContainer(double screenWidth, double screenHeight) {

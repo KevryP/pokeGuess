@@ -218,6 +218,7 @@ class GuessGameState extends State<GuessGame> {
         //Loss
         pokeWidge.getImageBox()?.updateColor();
         pokeWidge.getImageBox()?.updateBlur(20, 20);
+        dbService.updateStreak('loss');
       }
     }
     guessController.text = "";

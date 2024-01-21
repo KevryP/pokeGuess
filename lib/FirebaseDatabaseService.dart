@@ -15,6 +15,9 @@ class FirebaseDatabaseService extends ChangeNotifier {
 
     return usersRef.doc(user?.uid).set({
       'email': email,
+      'catches': 0,
+      'currentStreak': 0,
+      'longestStreak': 0,
     }).catchError((error) {
       print("Error adding to DB: $error");
     });
@@ -28,7 +31,9 @@ class FirebaseDatabaseService extends ChangeNotifier {
       });
       await usersRef.doc(user?.uid).update({
         'lastCatch': DateTime.now(),
+        'catches': FieldValue.increment(1),
       });
+      updateStreak('win');
       notifyListeners();
       return true;
     } catch (e) {
@@ -48,5 +53,42 @@ class FirebaseDatabaseService extends ChangeNotifier {
         await usersRef.doc(user?.uid).collection('caught').count().get();
 
     return qSnapshot.count;
+  }
+
+  Future<int> getCurrentStreak() async {
+    DocumentSnapshot documentSnapshot = await getUserData();
+    return documentSnapshot['currentStreak'];
+  }
+
+  Future<int> getLongestStreak() async {
+    DocumentSnapshot documentSnapshot = await getUserData();
+    return documentSnapshot['longestStreak'];
+  }
+
+  Future<bool> updateStreak(String result) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    int cStreak = await getCurrentStreak();
+    int lStreak = await getLongestStreak();
+    if (result == 'loss') {
+      await usersRef.doc(user?.uid).update({
+        'currentStreak': 0,
+      });
+      return false;
+    } else {
+      await usersRef.doc(user?.uid).update({
+        'currentStreak': cStreak + 1,
+      });
+      cStreak++;
+      if (cStreak > lStreak) {
+        await usersRef.doc(user?.uid).update({
+          'longestStreak': cStreak,
+        });
+        notifyListeners();
+
+        return true;
+      }
+    }
+
+    return false;
   }
 }
