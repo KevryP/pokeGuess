@@ -39,10 +39,11 @@ class _UserDetailsState extends State<UserDetails> {
                     ElevatedButton(
                         onPressed: () {
                           showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return LoginDialog(signInFunction: _signIn);
-                              });
+                            context: context,
+                            builder: (BuildContext context) {
+                              return LoginDialog(signInFunction: _signIn);
+                            },
+                          );
                         },
                         child: const Text("Log In")),
                     ElevatedButton(

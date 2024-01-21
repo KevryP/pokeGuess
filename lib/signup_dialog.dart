@@ -21,7 +21,10 @@ class _SignupDialogState extends State<SignupDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        backgroundColor: Colors.transparent, content: signupPage());
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: signupPage(),
+    );
   }
 
   Scaffold signupPage() {

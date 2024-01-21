@@ -21,7 +21,10 @@ class _LoginDialogState extends State<LoginDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        backgroundColor: Colors.transparent, content: loginPage());
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      content: loginPage(),
+    );
   }
 
   Scaffold loginPage() {
@@ -117,17 +120,6 @@ class _LoginDialogState extends State<LoginDialog> {
                 child: const Text("Login"),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.all(10),
-              child: Column(
-                children: [
-                  Text(
-                    "Don't have an account?",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            )
           ],
         ));
   }
