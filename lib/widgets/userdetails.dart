@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:poke_guess/FireabseAuthService.dart';
+import 'package:poke_guess/FirebaseDatabaseService.dart';
 import 'package:poke_guess/login_dialog.dart';
 import 'package:poke_guess/signup_dialog.dart';
 import 'package:poke_guess/widgets/trainercard.dart';
@@ -13,7 +15,9 @@ class UserDetails extends StatefulWidget {
 }
 
 class _UserDetailsState extends State<UserDetails> {
-  CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
+  //CollectionReference usersRef = FirebaseFirestore.instance.collection('users');
+  final FirebaseAuthService authService = FirebaseAuthService();
+  final FirebaseDatabaseService dbService = FirebaseDatabaseService();
 
   @override
   void initState() {
@@ -59,39 +63,29 @@ class _UserDetailsState extends State<UserDetails> {
     );
   }
 
-  Future<void> _signOut() async {
-    await FirebaseAuth.instance.signOut();
+  void _signOut() {
+    authService.signOut();
     setState(() {
       user = null;
     });
   }
 
-  Future<void> _signIn(email, password) async {
-    try {
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-      setState(() {
-        user = FirebaseAuth.instance.currentUser;
-      });
-    } catch (e) {
-      print("Login error: $e");
-    }
+  void _signIn(email, password) async {
+    await authService.emailSignIn(email, password);
+    setState(() {
+      user = FirebaseAuth.instance.currentUser;
+    });
   }
 
-  Future<void> _signUp(email, password) async {
-    try {
-      await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
-      _addUserToDB(email);
-      setState(() {
-        user = FirebaseAuth.instance.currentUser;
-      });
-    } catch (e) {
-      print("Login error: $e");
-    }
+  void _signUp(email, password) async {
+    await authService.emailSignUp(email, password);
+    //_addUserToDB(email);
+    setState(() {
+      user = FirebaseAuth.instance.currentUser;
+    });
   }
 
-  Future<void> _addUserToDB(email) {
+  /*Future<void> _addUserToDB(email) {
     User? user = FirebaseAuth.instance.currentUser;
 
     return usersRef.doc(user?.uid).set({
@@ -99,5 +93,5 @@ class _UserDetailsState extends State<UserDetails> {
     }).catchError((error) {
       print("Error adding to DB: $error");
     });
-  }
+  }*/
 }

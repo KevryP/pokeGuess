@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:poke_guess/FirebaseDatabaseService.dart';
+import 'package:provider/provider.dart';
 
 class TrainerCard extends StatefulWidget {
   final User? user;
@@ -28,7 +30,7 @@ class _TrainerCardState extends State<TrainerCard> {
     return qSnapshot.count;
   }
 
-  Widget pokedexWidget(screenWidth) {
+  /*Widget pokedexWidget(screenWidth) {
     return FutureBuilder(
       future: _getNumCaught(),
       builder: (context, snapshot) {
@@ -52,6 +54,39 @@ class _TrainerCardState extends State<TrainerCard> {
                 ),
               ]),
             ));
+      },
+    );
+  }*/
+
+  Widget pokedexWidget(screenWidth) {
+    //var dbServ = Provider
+    return Consumer<FirebaseDatabaseService>(
+      builder: (context, value, child) {
+        return FutureBuilder(
+          future: value.getNumCaught(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData == false) {
+              return const Text("Loading...");
+            }
+            return Container(
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                width: screenWidth / 6,
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4.0),
+                  color: Colors.blue.shade100,
+                ),
+                child: FittedBox(
+                  fit: BoxFit.fitHeight,
+                  child: Row(children: [
+                    Text(
+                      "Pokemon Caught: ${snapshot.data!}",
+                      style: const TextStyle(fontFamily: 'PokemonGb'),
+                    ),
+                  ]),
+                ));
+          },
+        );
       },
     );
   }

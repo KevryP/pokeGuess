@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:poke_guess/FirebaseDatabaseService.dart';
 import 'package:poke_guess/widgets/autoname.dart';
 import 'package:poke_guess/widgets/userdetails.dart';
 import 'poke_widget.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 PokeState pokeState = pokeState = PokeState();
 PokeWidget pokeWidge = PokeWidget(
@@ -29,20 +31,22 @@ class GuessGameState extends State<GuessGame> {
   CollectionReference collectionRef =
       FirebaseFirestore.instance.collection('users');
 
-  Future<bool> _addPokemon(String name) async {
+  /*Future<bool> _addPokemon(String name) async {
     User? user = FirebaseAuth.instance.currentUser;
     print("Caught!");
-
     if (user != null) {
       await collectionRef.doc(user.uid).collection('caught').doc(name).set({
         'name': name,
         'level': 5,
       });
+      await collectionRef.doc(user.uid).set({
+        'lastCatch': DateTime.now(),
+      });
       return true;
     } else {
       return true;
     }
-  }
+  }*/
 
   void updateGuesses(String guess) {
     setState(() {
@@ -50,17 +54,16 @@ class GuessGameState extends State<GuessGame> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    guessController.addListener(_handleControllerChange);
-  }
-
   _handleControllerChange() {
     setState(() {
       guess = guessController.text;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    guessController.addListener(_handleControllerChange);
   }
 
   @override
@@ -195,13 +198,16 @@ class GuessGameState extends State<GuessGame> {
   }
 
   onSubmit(String val) async {
+    var dbService =
+        Provider.of<FirebaseDatabaseService>(context, listen: false);
+
     if (guesses.length >= 5) {
       return;
     }
     if (pokeWidge.getPokeName() == val) {
       //Win
       updateGuesses(val);
-      _addPokemon(pokeWidge.getPokeName()!);
+      dbService.addCaughtPoke(pokeWidge.getPokeName()!);
       pokeWidge.getImageBox()?.updateColor();
       pokeWidge.getImageBox()?.updateBlur(20, 20);
       isWin = true;
