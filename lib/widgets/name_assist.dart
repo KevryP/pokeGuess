@@ -13,7 +13,7 @@ class PokeyName {
 
 Future<Map<String, dynamic>> fetchPost() async {
   final response =
-      await http.get(Uri.parse("http://pokeapi.co/api/v2/pokemon/?limit=811"));
+      await http.get(Uri.parse("https://pokeapi.co/api/v2/pokemon/?limit=811"));
   if (response.statusCode == 200) {
     Map<String, dynamic> post = jsonDecode(response.body);
     return post;
@@ -78,13 +78,17 @@ class PokeNamesState extends State<PokeNames> {
     filterNames();
     return SizedBox(
       height: 100,
-      child: ListView.builder(
-          itemCount: filteredNames?.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Text(
-                style: const TextStyle(color: Colors.white),
-                filteredNames![index].name);
-          }),
+      child: Expanded(
+        child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemCount: filteredNames?.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Text(
+                  style: const TextStyle(color: Colors.black),
+                  filteredNames![index].name);
+            }),
+      ),
     );
   }
 }

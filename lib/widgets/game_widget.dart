@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:poke_guess/widgets/pokedex.dart';
+import 'package:poke_guess/FirebaseDatabaseService.dart';
+import 'package:poke_guess/widgets/autoname.dart';
+import 'package:poke_guess/widgets/userdetails.dart';
 import 'poke_widget.dart';
-import 'name_assist.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 PokeState pokeState = pokeState = PokeState();
 PokeWidget pokeWidge = PokeWidget(
@@ -18,34 +21,37 @@ class GuessGame extends StatefulWidget {
 }
 
 class GuessGameState extends State<GuessGame> {
-  bool isOver = false;
+  bool isWin = false;
   bool showPokedex = false;
   List<String> guesses = [];
   String guess = "";
   TextEditingController guessController = TextEditingController();
+  TextEditingController disabledController = TextEditingController();
+
   CollectionReference collectionRef =
       FirebaseFirestore.instance.collection('users');
 
-  Future<void> _addPokemon(String name) {
+  /*Future<bool> _addPokemon(String name) async {
     User? user = FirebaseAuth.instance.currentUser;
     print("Caught!");
-    return collectionRef.doc(user?.uid).collection('caught').doc(name).set({
-      'name': name,
-      'level': 5,
-    });
-  }
+    if (user != null) {
+      await collectionRef.doc(user.uid).collection('caught').doc(name).set({
+        'name': name,
+        'level': 5,
+      });
+      await collectionRef.doc(user.uid).set({
+        'lastCatch': DateTime.now(),
+      });
+      return true;
+    } else {
+      return true;
+    }
+  }*/
 
   void updateGuesses(String guess) {
     setState(() {
       guesses.add(guess);
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    guessController.addListener(_handleControllerChange);
   }
 
   _handleControllerChange() {
@@ -55,56 +61,134 @@ class GuessGameState extends State<GuessGame> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    guessController.addListener(_handleControllerChange);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black38,
-      body: Row(children: [
-        const Expanded(child: Text("left")),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 100),
-            child: Column(
-              children: [
-                pokeWidge,
-                Text(
-                  isOver == true ? pokeWidge.getPokeName()! : "Who's that",
-                  style: const TextStyle(fontFamily: 'Pokemon', fontSize: 50),
-                ),
-                SizedBox(
-                  width: 300,
-                  child: Column(
-                    children: [
-                      inputField(),
-                      for (int i = 0; i < guesses.length; i++) Text(guesses[i]),
-                      PokeNames(guessInput: guess),
-                      if (isOver == true) resetBtn(),
-                      resetBtn(), //For testing, should be removed in release
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Column(
+    return Expanded(
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 50),
+          child: Row(
             children: [
-              const Spacer(),
-              pokedexButton(),
-              if (showPokedex) const Pokedex(),
-              const Spacer(),
+              const Card(child: UserDetails()),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    label(),
+                    Padding(
+                        padding: const EdgeInsets.all(50), child: pokeWidge),
+                    guessBox(),
+                    if (isWin || (guesses.length >= 5)) resetBtn(),
+                  ],
+                ),
+              ),
+              const Expanded(child: Text(""))
             ],
           ),
-        )
-      ]),
+        ),
+      ),
     );
   }
 
-  TextField inputField() {
+  Stack label() {
+    return Stack(
+      children: [
+        Text(
+          (isWin || (guesses.length >= 5))
+              ? pokeWidge.getPokeName()!
+              : "Who's that Pokémon?",
+          style: TextStyle(
+              fontFamily: 'Pokemon',
+              fontSize: 50,
+              foreground: Paint()
+                ..style = PaintingStyle.stroke
+                ..strokeWidth = 10
+                ..color = const Color.fromARGB(255, 3, 98, 175)),
+        ),
+        Text(
+          (isWin || (guesses.length >= 5))
+              ? pokeWidge.getPokeName()!
+              : "Who's that Pokémon?",
+          style: TextStyle(
+              fontFamily: 'Pokemon',
+              fontSize: 50,
+              foreground: Paint()
+                ..style = PaintingStyle.fill
+                ..strokeWidth = 6
+                ..color = Colors.yellow),
+        ),
+      ],
+    );
+  }
+
+  SizedBox guessBox() {
+    return SizedBox(
+      width: 500,
+      child: Column(
+        children: [
+          for (int i = 0; i < guesses.length; i++)
+            if (isWin && i == guesses.length - 1)
+              prevGuessContainer(guesses[i], true)
+            else
+              prevGuessContainer(guesses[i], false),
+          for (int i = guesses.length; i < 5; i++)
+            if (i == guesses.length && !isWin)
+              AutoName(onSubmit: onSubmit, isActive: true)
+            else
+              AutoName(onSubmit: onSubmit, isActive: false),
+        ],
+      ),
+    );
+  }
+
+  Padding prevGuessContainer(guess, correct) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+        height: 48,
+        width: 300,
+        child: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                guess.toUpperCase(),
+                style: const TextStyle(color: Colors.black),
+              ),
+              const Spacer(),
+              if (correct)
+                SvgPicture.asset(
+                  'assets/Pokeball.svg',
+                  height: 100,
+                )
+              else
+                SvgPicture.asset(
+                  'assets/PokeballGrey.svg',
+                  height: 100,
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  TextField inputField(enabled) {
     return TextField(
-      style: const TextStyle(color: Colors.white),
-      cursorColor: Colors.white,
-      controller: guessController,
+      style: const TextStyle(color: Colors.black),
+      cursorColor: Colors.black,
+      enabled: enabled,
+      controller: enabled ? guessController : disabledController,
       decoration: const InputDecoration(
         hintText: "Enter your guess",
       ),
@@ -114,31 +198,35 @@ class GuessGameState extends State<GuessGame> {
   }
 
   onSubmit(String val) async {
+    var dbService =
+        Provider.of<FirebaseDatabaseService>(context, listen: false);
+
     if (guesses.length >= 5) {
       return;
     }
     if (pokeWidge.getPokeName() == val) {
       //Win
-      _addPokemon(pokeWidge.getPokeName()!);
+      updateGuesses(val);
+      dbService.addCaughtPoke(pokeWidge.getPokeName()!);
       pokeWidge.getImageBox()?.updateColor();
       pokeWidge.getImageBox()?.updateBlur(20, 20);
-      isOver = true;
+      isWin = true;
     } else {
       updateGuesses(val);
       pokeWidge.getImageBox()?.updateBlur(5, 5);
       if (guesses.length > 4) {
         //Loss
-        isOver = true;
         pokeWidge.getImageBox()?.updateColor();
         pokeWidge.getImageBox()?.updateBlur(20, 20);
+        dbService.updateStreak('loss');
       }
     }
     guessController.text = "";
-    setState(() {});
+    setState(() {/* A guess was received, progress game */});
   }
 
   resetGame() {
-    isOver = false;
+    isWin = false;
     pokeWidge.randomizePoke();
     guesses = [];
     setState(() {});
@@ -148,7 +236,7 @@ class GuessGameState extends State<GuessGame> {
     return ElevatedButton(
       onPressed: resetGame,
       child: const Text(
-        "Reset",
+        "Play Again",
       ),
     );
   }

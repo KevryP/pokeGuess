@@ -52,16 +52,23 @@ class ImageBoxState extends State<ImageBox> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Stack(children: [
-        pokeBackground(),
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
         backgroundBlur(),
-        Positioned(top: 0, left: 20, child: pokeImg())
-      ])
-    ]);
+      ]),
+      child: Column(children: [
+        Stack(children: [
+          pokeBackground(),
+          pokeImg(),
+        ])
+      ]),
+    );
   }
 
   ImageFiltered pokeImg() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
     return ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: sigmaX, sigmaY: sigmaY),
         child: ColorFiltered(
@@ -69,22 +76,31 @@ class ImageBoxState extends State<ImageBox> {
           child: Image.network(
             widget.sprite,
             fit: BoxFit.fill,
-            width: 300,
+            height: screenHeight / 3.5,
+            width: screenWidth / 6.5,
           ),
         ));
   }
 
   ClipRRect pokeBackground() {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
-      child: Image.asset('../assets/witp.jpg'),
+      child: Image.asset(
+        'assets/witp.jpg',
+        fit: BoxFit.fill,
+        height: screenHeight / 3.5,
+        width: screenWidth / 3.5,
+      ),
     );
   }
 
-  BackdropFilter backgroundBlur() {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-      child: pokeBackground(),
+  BoxShadow backgroundBlur() {
+    return const BoxShadow(
+      color: Colors.red,
+      spreadRadius: 10,
+      blurRadius: 30,
     );
   }
 }
