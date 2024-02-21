@@ -25,7 +25,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/witp.jpg
+    - assets/PokeballGrey.svg
+    - assets/Pokeball.svg
   fonts:
     - family: Pokemon
       fonts:

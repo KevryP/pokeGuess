@@ -168,12 +168,12 @@ class GuessGameState extends State<GuessGame> {
               const Spacer(),
               if (correct)
                 SvgPicture.asset(
-                  'Pokeball.svg',
+                  'assets/Pokeball.svg',
                   height: 100,
                 )
               else
                 SvgPicture.asset(
-                  'PokeballGrey.svg',
+                  'assets/PokeballGrey.svg',
                   height: 100,
                 ),
             ],

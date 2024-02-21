@@ -13,7 +13,7 @@ class PokeyName {
 
 Future<Map<String, dynamic>> fetchPost() async {
   final response =
-      await http.get(Uri.parse("http://pokeapi.co/api/v2/pokemon/?limit=811"));
+      await http.get(Uri.parse("https://pokeapi.co/api/v2/pokemon/?limit=811"));
   if (response.statusCode == 200) {
     Map<String, dynamic> post = jsonDecode(response.body);
     return post;

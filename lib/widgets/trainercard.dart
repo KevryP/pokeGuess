@@ -158,7 +158,7 @@ class _TrainerCardState extends State<TrainerCard> {
       width: screenWidth / 9,
       height: screenHeight,
       //color: Colors.blue.shade100,
-      child: SvgPicture.asset('PokeballGrey.svg'),
+      child: SvgPicture.asset('assets/PokeballGrey.svg'),
     );
   }
 }

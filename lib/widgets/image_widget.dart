@@ -88,7 +88,7 @@ class ImageBoxState extends State<ImageBox> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
       child: Image.asset(
-        '../assets/witp.jpg',
+        'assets/witp.jpg',
         fit: BoxFit.fill,
         height: screenHeight / 3.5,
         width: screenWidth / 3.5,
