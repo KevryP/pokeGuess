@@ -1,3 +1,4 @@
 # poke_guess
 
-A new Flutter project.
+Hosted on firebase:
+https://pokeguess-ad0e1.web.app/
